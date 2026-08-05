@@ -64,7 +64,128 @@
 // - Tip: Complete Part A first, then Parts B and C.
 //
 
-// =============================================================================
+const readlineSync = require('readline-sync');
+
+function readMatrix(rows, cols) {
+    const matrix = [];
+    for (let i = 0; i < rows; i++) {
+        let row;
+        while (true) {
+            row = readlineSync.question(`Enter row ${i + 1}: `).split(' ').map(Number);
+            if (row.length !== cols) {
+                console.log(`Error: expected ${cols} values, got ${row.length}. Try again.`);
+                continue;
+            }
+            break;
+        }
+        matrix.push(row);
+    }
+    return matrix;
+}
+
+function printMatrix(matrix) {
+    for (const row of matrix) {
+        console.log(row.map(val => String(val).padStart(6)).join(' '));
+    }
+}
+
+function transposeMatrix(matrix) {
+    const rows = matrix.length;
+    const cols = matrix[0].length;
+    const result = [];
+    for (let j = 0; j < cols; j++) {
+        result.push(new Array(rows).fill(0));
+    }
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            result[j][i] = matrix[i][j];
+        }
+    }
+    return result;
+}
+
+function addMatrices(matrixA, matrixB) {
+    const rows = matrixA.length;
+    const cols = matrixA[0].length;
+    const result = [];
+    for (let i = 0; i < rows; i++) {
+        result.push(new Array(cols).fill(0));
+    }
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            result[i][j] = matrixA[i][j] + matrixB[i][j];
+        }
+    }
+    return result;
+}
+
+function multiplyMatrices(matrixA, matrixB) {
+    const rowsA = matrixA.length;
+    const colsA = matrixA[0].length;
+    const colsB = matrixB[0].length;
+    const result = [];
+    for (let i = 0; i < rowsA; i++) {
+        result.push(new Array(colsB).fill(0));
+    }
+
+    for (let i = 0; i < rowsA; i++) {
+        for (let j = 0; j < colsB; j++) {
+            let total = 0;
+            for (let k = 0; k < colsA; k++) {
+                total += matrixA[i][k] * matrixB[k][j];
+            }
+            result[i][j] = total;
+        }
+    }
+    return result;
+}
+
+function main() {
+    // ---------- Part A: Transpose ----------
+    console.log("=== Part A: Transpose a Matrix ===");
+    const rows = readlineSync.questionInt("Enter number of rows: ");
+    const cols = readlineSync.questionInt("Enter number of columns: ");
+    const matrix = readMatrix(rows, cols);
+
+    console.log("\nOriginal Matrix:");
+    printMatrix(matrix);
+
+    const transposed = transposeMatrix(matrix);
+    console.log("\nTransposed Matrix:");
+    printMatrix(transposed);
+
+    // ---------- Part B: Add Two Matrices ----------
+    console.log("\n=== Part B: Add Two Matrices ===");
+    const rowsB = readlineSync.questionInt("Enter number of rows for both matrices: ");
+    const colsB = readlineSync.questionInt("Enter number of columns for both matrices: ");
+
+    console.log("Matrix 1:");
+    const matrix1 = readMatrix(rowsB, colsB);
+    console.log("Matrix 2:");
+    const matrix2 = readMatrix(rowsB, colsB);
+
+    const sumResult = addMatrices(matrix1, matrix2);
+    console.log("\nSum of Matrices:");
+    printMatrix(sumResult);
+
+    // ---------- Part C: Multiply Two Matrices ----------
+    console.log("\n=== Part C: Multiply Two Matrices ===");
+    const m = readlineSync.questionInt("Enter rows of Matrix A: ");
+    const n = readlineSync.questionInt("Enter columns of Matrix A (= rows of Matrix B): ");
+    const p = readlineSync.questionInt("Enter columns of Matrix B: ");
+
+    console.log("Matrix A:");
+    const matrixA = readMatrix(m, n);
+    console.log("Matrix B:");
+    const matrixB = readMatrix(n, p);
+
+    const product = multiplyMatrices(matrixA, matrixB);
+    console.log("\nProduct of Matrices (A x B):");
+    printMatrix(product);
+}
+
+main();
+
 // YOUR CODE BELOW — remove the // symbols from the scaffold and fill it in
 // =============================================================================
 

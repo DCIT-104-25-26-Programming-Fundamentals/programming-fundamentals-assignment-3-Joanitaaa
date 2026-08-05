@@ -77,7 +77,81 @@
 // - To remove an item from an array by index, use: tasks.splice(index, 1)
 //
 //
-// =============================================================================
+const readlineSync = require('readline-sync');
+
+function displayMenu() {
+    console.log("============================");
+    console.log("     TO-DO LIST MENU");
+    console.log("============================");
+    console.log("1. Add task");
+    console.log("2. View tasks");
+    console.log("3. Delete task");
+    console.log("4. Quit");
+}
+
+function addTask(tasks) {
+    const task = readlineSync.question("Enter task: ");
+    tasks.push(task);
+    console.log(`Task added: "${task}"`);
+}
+
+function viewTasks(tasks) {
+    if (tasks.length === 0) {
+        console.log("Your task list is empty. Add something to get started!");
+        return;
+    }
+
+    console.log("Your Tasks:");
+    for (let i = 0; i < tasks.length; i++) {
+        console.log(`${i + 1}. ${tasks[i]}`);
+    }
+}
+
+function deleteTask(tasks) {
+    if (tasks.length === 0) {
+        console.log("Your task list is empty. Nothing to delete.");
+        return;
+    }
+
+    viewTasks(tasks);
+    const index = readlineSync.questionInt("Enter task number to delete: ");
+
+    if (index < 1 || index > tasks.length) {
+        console.log("Error: That task number doesn't exist.");
+        return;
+    }
+
+    const removed = tasks[index - 1];
+    tasks.splice(index - 1, 1);
+    console.log(`Task "${removed}" has been removed.`);
+}
+
+function main() {
+    let tasks = [];
+
+    while (true) {
+        displayMenu();
+        const choice = readlineSync.questionInt("Enter your choice (1-4): ");
+
+        if (choice === 1) {
+            addTask(tasks);
+        } else if (choice === 2) {
+            viewTasks(tasks);
+        } else if (choice === 3) {
+            deleteTask(tasks);
+        } else if (choice === 4) {
+            console.log("Goodbye!");
+            break;
+        } else {
+            console.log("Error: Invalid choice. Please enter a number from 1 to 4.");
+        }
+
+        console.log();
+    }
+}
+
+main();
+
 // YOUR CODE BELOW — remove the // symbols from the scaffold and fill it in
 // =============================================================================
 
